@@ -47,3 +47,26 @@ func main() {
 	fmt.Println(i, j, k, c, python, java)
 }
 ```
+
+### Constants
+
+Declared using `const`. Cannot be declared using `:=`. They can be **string**, **boolean**, or **numeric**.
+
+A good practice is to name them *uppercase*.
+
+```go
+package main
+
+import "fmt"
+
+const Pi = 3.14 // Pi is exported
+
+func main() {
+	const World = "世界"
+	fmt.Println("Hello", World)
+	fmt.Println("Happy", Pi, "Day")
+
+	const Truth = true
+	fmt.Println("Go rules?", Truth)
+}
+```
