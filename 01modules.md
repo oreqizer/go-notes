@@ -37,7 +37,12 @@ Everything scoped globally starting with **uppercase** letter is exported. We ac
 ```go
 package main
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
-math.Pi // 3.141592653589
+func main() {
+	fmt.Println(math.Pi) // 3.141592653589
+}
 ```
