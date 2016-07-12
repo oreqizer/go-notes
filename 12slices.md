@@ -1,6 +1,6 @@
 # Slices
 
-Slices are dynamically-sized *views* of arrays. They are much more common than arrays.
+Slices are dynamically-sized *views* of arrays. They are much more common than arrays. They can be of any type, also of other slices.
 
 * `[]T` is a slice with elements of type `T`
 * `a[0:5]` creates a slice with first 5 elements of the array `a`
@@ -108,3 +108,96 @@ The zero value of a slice is `nil`.
 
 * has 0 length and capacity
 * has no underlying array
+
+### Make
+
+`make` allocates a zeroed array and returns a slice that refers to that array. Used for creating dynamically-sized arrays.
+
+```go
+a := make([]int, 5)  // len(a) is 5
+```
+
+*Capacity* can also be provided as a third argument:
+
+```go
+b := make([]int, 0, 5) // len(b)=0, cap(b)=5
+
+b = b[:cap(b)] // len(b)=5, cap(b)=5
+b = b[1:]      // len(b)=4, cap(b)=4
+```
+
+### Append
+
+`append` is used for appending new elements to a slice.
+
+Definition `func append(s []T, vs ...T) []T`:
+
+* **s** is the original slice
+* **vs** are the new values to append
+
+If the *slice*'s capacity is not sufficient, a new *array* is allocated, and a pointer to the new array is returned.
+
+### Range
+
+The `range` form of the `for` loop iterates over a slice or a map. First value returned when iterating is the *index*, second is the *value*:
+
+```go
+package main
+
+import "fmt"
+
+var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
+
+func main() {
+	for i, v := range pow {
+		fmt.Printf("2**%d = %d\n", i, v)
+	}
+}
+```
+
+If we want to ignore the index, simply name the variable `_`:
+
+```go
+package main
+
+import "fmt"
+
+var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
+
+func main() {
+	for _, v := range pow {
+		fmt.Printf("%d, ", v) // 1, 2, 4, 8, 16, 32, 64, 128,
+	}
+}
+```
+
+## Exercise
+
+Implement `Pic`. It should return a slice of length `dy`, each element of which is a slice `of` dx 8-bit unsigned integers. When you run the program, it will display your picture, interpreting the integers as grayscale (well, bluescale) values.
+
+```go
+package main
+
+import "golang.org/x/tour/pic"
+
+func fillRow(row []uint8, dx, y int) {
+	for x := 0; x < dx; x++ {
+		row[x] = uint8((x+y)/2)
+		// row[x] = uint8(x*y)
+		// row[x] = uint8(x^y)
+	}
+}
+
+func Pic(dx, dy int) [][]uint8 {
+	full := make([][]uint8, dy)
+	for y := 0; y < dy; y++ {
+		full[y] = make([]uint8, dx)
+		fillRow(full[y], dx, y)
+	}
+	return full
+}
+
+func main() {
+	pic.Show(Pic)
+}
+```
