@@ -10,7 +10,7 @@ package main
 
 ### Import:
 
-Simple import:
+**Simple import:**
 
 ```go
 package main
@@ -19,13 +19,34 @@ import "fmt"
 import "math/rand"
 ```
 
-Factored import (preferred):
+**Factored import** (preferred):
 
 ```go
 package main
 
 import (
 	"fmt"
+	"math/rand"
+)
+```
+
+**Named import:**
+
+Useful, when packages of the same name are imported.
+
+```go
+package main
+
+import f "fmt" // fmt is now f
+```
+
+We can combine these:
+
+```go
+package main
+
+import (
+	f "fmt"
 	"math/rand"
 )
 ```
