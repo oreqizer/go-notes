@@ -15,7 +15,6 @@ import (
 	"io"
 	"math"
 	"math/rand"
-	"os"
 )
 
 //!-main
@@ -23,7 +22,9 @@ import (
 import (
 	"log"
 	"net/http"
+	"net/url"
 	"time"
+	"strconv"
 )
 
 //!+main
@@ -49,38 +50,43 @@ func main() {
 	// Thanks to Randall McPherson for pointing out the omission.
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	if len(os.Args) > 1 && os.Args[1] == "web" {
-		//!+http
-		http.HandleFunc("/", lissajousHandler)
-		//!-http
-		log.Fatal(http.ListenAndServe("localhost:8000", nil))
-		return
-	}
-	//!+main
-	lissajous(os.Stdout, greenIndex)
+	//!+http
+	http.HandleFunc("/", lissajousHandler)
+	//!-http
+	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 
 func lissajousHandler(w http.ResponseWriter, r *http.Request) {
-	log.Print("URL:", r.URL.Path)
+	log.Print("URL: ", r.URL.Path)
+	if err := r.ParseForm(); err != nil {
+		log.Print(err)
+	}
 	switch r.URL.Path {
 	case "/red":
-		lissajous(w, redIndex)
+		lissajous(w, r.Form, redIndex)
 
 	case "/blue":
-		lissajous(w, blueIndex)
+		lissajous(w, r.Form, blueIndex)
 
 	default:
-		lissajous(w, greenIndex)
+		lissajous(w, r.Form, greenIndex)
 	}
 }
 
-func lissajous(out io.Writer, colorIndex uint8) {
+func lissajous(out io.Writer, values url.Values, colorIndex uint8) {
+	delay := 8
+	if values["delay"] != nil {
+		i, err := strconv.Atoi(values["delay"][0])
+		if err != nil {
+			log.Print(err)
+		}
+		delay = i
+	}
 	const (
 		cycles  = 5     // number of complete x oscillator revolutions
 		res     = 0.001 // angular resolution
 		size    = 100   // image canvas covers [-size..+size]
 		nframes = 64    // number of animation frames
-		delay   = 8     // delay between frames in 10ms units
 	)
 	freq := rand.Float64() * 3.0 // relative frequency of y oscillator
 	anim := gif.GIF{LoopCount: nframes}
