@@ -25,13 +25,16 @@ func main() {
 		resp, err := http.Get(url)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
+			resp.Body.Close()
 			os.Exit(1)
 		}
 		_, err = io.Copy(os.Stdout, resp.Body)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "fetch: copy: %v\n", err)
+			resp.Body.Close()
 			os.Exit(1)
 		}
+		resp.Body.Close()
 		fmt.Printf("Status code: %s\n", resp.Status)
 	}
 }
