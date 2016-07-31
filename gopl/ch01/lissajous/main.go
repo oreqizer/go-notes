@@ -28,11 +28,18 @@ import (
 
 //!+main
 
-var palette = []color.Color{color.White, color.Black}
+var palette = []color.Color{
+	color.Black,
+	color.RGBA{255, 0, 0, 255},
+	color.RGBA{0, 255, 0, 255},
+	color.RGBA{0, 0, 255, 255},
+}
 
 const (
-	whiteIndex = 0 // first color in palette
-	blackIndex = 1 // next color in palette
+	blackIndex = 0
+	redIndex = 1
+	greenIndex = 2
+	blueIndex = 3
 )
 
 func main() {
@@ -44,19 +51,30 @@ func main() {
 
 	if len(os.Args) > 1 && os.Args[1] == "web" {
 		//!+http
-		handler := func(w http.ResponseWriter, r *http.Request) {
-			lissajous(w)
-		}
-		http.HandleFunc("/", handler)
+		http.HandleFunc("/", lissajousHandler)
 		//!-http
 		log.Fatal(http.ListenAndServe("localhost:8000", nil))
 		return
 	}
 	//!+main
-	lissajous(os.Stdout)
+	lissajous(os.Stdout, greenIndex)
 }
 
-func lissajous(out io.Writer) {
+func lissajousHandler(w http.ResponseWriter, r *http.Request) {
+	log.Print("URL:", r.URL.Path)
+	switch r.URL.Path {
+	case "/red":
+		lissajous(w, redIndex)
+
+	case "/blue":
+		lissajous(w, blueIndex)
+
+	default:
+		lissajous(w, greenIndex)
+	}
+}
+
+func lissajous(out io.Writer, colorIndex uint8) {
 	const (
 		cycles  = 5     // number of complete x oscillator revolutions
 		res     = 0.001 // angular resolution
@@ -73,8 +91,7 @@ func lissajous(out io.Writer) {
 		for t := 0.0; t < cycles*2*math.Pi; t += res {
 			x := math.Sin(t)
 			y := math.Sin(t*freq + phase)
-			img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5),
-				blackIndex)
+			img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5), colorIndex)
 		}
 		phase += 0.1
 		anim.Delay = append(anim.Delay, delay)
