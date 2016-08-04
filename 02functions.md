@@ -20,6 +20,30 @@ Functions have:
 * 0-n typed parameters
 * 0-n typed return values
 
+### Arguments
+
+Functions receive a **copy** of an argument. To modify the argument, we need to pass a *pointer* to the value.
+
+The exception is reference-based types like `slice`, `map`, `function`, `pointer` and `channel`.
+
+### Variadic arguments
+
+`...` allows variadic arguments *of the same type*. It captures them to a slice.
+
+```go
+func foo(params ...int) {
+    fmt.Println(len(params))
+}
+```
+
+We can also spread a slice when suffixing `...`:
+
+```go
+nums := []int{1, 2, 3}
+
+foo(nums...) // 3
+```
+
 ### Function values
 
 Functions are *first class values* - they can be passed around:
