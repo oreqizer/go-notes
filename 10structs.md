@@ -34,6 +34,8 @@ p := &v
 
 We can construct a `struct` either by specifying values of the fields in the correct order (X, Y in this case), or we can use the `key: value` syntax.
 
+*Note:* we cannot combine these two approaches.
+
 Prefixing the struct declaration with a `&` returns a pointer instead of the value.
 
 ```go
@@ -56,3 +58,46 @@ func main() {
 	fmt.Println(v1, p, v2, v3)
 }
 ```
+
+### Struct comparing
+
+If all fields of a `struct` are comparable, the `struct` itself is also comparable with `==`.
+
+A comparable `struct` can be used as a key in a `map`.
+
+### Struct embedding
+
+We can embed a type to a `struct`.
+
+```go
+type Point struct {
+	x int
+	y int
+}
+
+type Circle struct {
+	Point
+	Radius int
+}
+```
+
+**Point** implicitly takes it's type name - we cannot have another field named 'Point' in the `struct`. It's *visibility* is also inherited.
+
+If the type is another `struct`, all it's fields are inherited and gain a *syntactic sugar* for field accessing:
+
+```go
+var c Circle
+c.Point.x = 5
+c.y = 4 // sugar for 'c.Point.y = 4'
+```
+
+We have to be explicit in `struct` literals:
+
+```go
+c := Circle{
+	Point: Point{4, 5},
+	Radius: 10,
+}
+```
+
+Embedding a type makes the `struct` also inherit all **methods** of the type.
