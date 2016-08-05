@@ -88,7 +88,7 @@ t := i.(T)
 ```
 
 * asserts that the *interface value* `i` holds the *concrete type* `T`
-* assigns the underlying `T` value to the variable `t`. If `i` does not hold a `T`, the statement will trigger a panic.
+* assigns the underlying `T` value to the variable `t`. If `i` does not hold a `T`, the statement will trigger a panic
 
 Testing if an interface value holds a type:
 
