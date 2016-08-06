@@ -100,3 +100,87 @@ t, ok := i.(T)
 * else, `t` is a *zero value* of the type and `ok` will be `false`
 
 ### Type switch
+
+Like a multiple *type assertion*. Type `T` is replaced with the keyword `type`:
+
+```go
+package main
+
+import "fmt"
+
+func do(i interface{}) {
+	switch v := i.(type) {
+	case int:
+		fmt.Printf("Twice %v is %v\n", v, v*2)
+	case string:
+		fmt.Printf("%q is %v bytes long\n", v, len(v))
+	default:
+		fmt.Printf("I don't know about type %T!\n", v)
+	}
+}
+
+func main() {
+	do(21)
+	do("hello")
+	do(true)
+}
+```
+
+### Conventions
+
+If an interface has one method, it's name is usually the method's name with *er* suffix.
+
+*Stringer*
+
+Any `type` implementing *Stringer* can represent itself as a `string`.
+
+```go
+type Stringer interface {
+    String() string
+}
+```
+
+*Reader*
+
+The `io` package specifies the `io.Reader` interface, which represents the read end of a stream of data. It has many implementations in the standard library like *files, network connections, compressors, ciphers*, and others.
+
+```go
+type Reader interface {
+	Read(b []byte) (n int, err error)
+}
+```
+
+`Read` populates the given **byte slice** with data and returns the number of bytes populated and an `error` value. It returns an `io.EOF` error when the stream ends.
+
+## Exercise
+
+Define your own `Image` type, implement the necessary [methods](https://golang.org/pkg/image/#Image), and call `pic.ShowImage`.
+
+```go
+package main
+
+import (
+	"golang.org/x/tour/pic"
+	"image"
+	"image/color"
+)
+
+type Image struct{}
+
+func (i Image) ColorModel() color.Model {
+	return color.RGBAModel
+}
+
+func (i Image) Bounds() image.Rectangle {
+	return image.Rect(0, 0, 100, 100)
+}
+
+func (i Image) At(x, y int) color.Color {
+	return color.RGBA{255, 255, 255, 255}
+}
+
+func main() {
+	m := Image{}
+	pic.ShowImage(m)
+}
+```
