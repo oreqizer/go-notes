@@ -67,3 +67,13 @@ func main() {
 	fmt.Println(math.Pi) // 3.141592653589
 }
 ```
+
+### Init:
+
+A special `init` function can be defined in a file that runs at after the package has been initialized:
+
+```go
+func init() {
+	http.HandleFunc("/api", handler)
+}
+```

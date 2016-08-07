@@ -173,7 +173,7 @@ func main() {
 
 ## Exercise
 
-Implement `Pic`. It should return a slice of length `dy`, each element of which is a slice `of` dx 8-bit unsigned integers. When you run the program, it will display your picture, interpreting the integers as grayscale (well, bluescale) values.
+Implement `Pic`. It should return a slice of length `dy`, each element of which is a slice of `dx` 8-bit unsigned integers. When you run the program, it will display your picture, interpreting the integers as grayscale (well, bluescale) values.
 
 ```go
 package main
