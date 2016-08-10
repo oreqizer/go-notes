@@ -2,6 +2,8 @@
 
 ### Package:
 
+A single **folder**. Consists of *1-n* source files. They share package scope, meaning they can see each other's globals, even if they are *not exported* (are *lowercase*).
+
 ```go
 package main
 ```
