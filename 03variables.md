@@ -76,8 +76,6 @@ func main() {
 ```go
 package main
 
-import "fmt"
-
 const (
 	// Create a huge number by shifting a 1 bit left 100 places.
 	// In other words, the binary number that is 1 followed by 100 zeroes.
@@ -87,5 +85,33 @@ const (
 )
 ```
 
-*Note:*
-An int can store at maximum a 64-bit integer, and sometimes less.
+> *Note:* An `int` can store at maximum a 64-bit integer, and sometimes less.
+
+### Enums
+
+Creating enumerations can be done by the `iota` identifier, which simply is an auto incrementer. It starts at `0`.
+
+```go
+type Type int
+
+const (
+	Zombie Type = iota
+	Chicken
+	Creeper
+	Enderman
+)
+```
+
+Something more wild:
+
+```go
+type ByteSize float64
+
+const (
+    _           = iota // ignore first value by assigning to blank identifier
+    KB ByteSize = 1 << (10 * iota)
+    MB
+    GB
+    TB
+)
+```
