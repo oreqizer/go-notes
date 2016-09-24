@@ -14,7 +14,7 @@ app/
     /module
         module.go
         /utils
-        util.go
+            util.go
 ```
 
 `main` imports `module`, that imports `utils`.
