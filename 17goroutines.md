@@ -4,7 +4,7 @@ Each concurrently executing activity is a *goroutine*. They are spawned using th
 
 By default there's only one goroutine - one that calls the `main` function.
 
-### Channels
+## Channels
 
 Goroutines are the activities, *channels* are the connections between them. They are conduits for a particular type:
 
@@ -42,14 +42,26 @@ ch = make(chan int, 0) // unbuffered channel
 ch = make(chan int, 3) // buffered channel with capacity 3
 ```
 
+The built-in `cap` function can be used to determine a channel's capacity, and `len` can be used to get the number of currently buffered elements:
+
+```go
+ch := make(chan int, 3)
+fmt.Println(cap(ch)) // 3
+fmt.Println(len(ch)) // 0
+ch <- 13
+ch <- 37
+fmt.Println(len(ch)) // 2
+```
+
 **Differences:**
 
-Unbuffered channels:
+Unbuffered (*synchronous*) channels:
 * *sending* things first blocks the goroutine until the value was *received*
 * *receiving* a value first blocks the goroutine until the value was *sent*
 
 Buffered channels:
-* *sending* and *receiving* doesn't block the channel
+* *sending* only blocks the goroutine if the channel is **full**
+* *receiving* only blocks the goroutine if the channel is **empty**
 
 ### Channel iteration
 
@@ -66,3 +78,30 @@ for x := range ch {
     // do something with channel values
 }
 ```
+
+### Unidirectional channels
+
+Channel type can be declared *unidirectional*, either only for sending or receiving:
+
+```go
+func counter(out chan<- int) {
+    for x := 0; x < 100; x++ {
+        out <- x
+    }
+    close(out)
+}
+
+func printer(in <-chan int) {
+    for v := range in {
+        fmt.Println(v)
+    }
+}
+
+func main() {
+    nums := make(chan int)
+    go counter(nums)
+    printer(nums)
+}
+```
+
+Not obeying the channel direction is detected at compile time.
