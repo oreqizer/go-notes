@@ -105,3 +105,24 @@ func main() {
 ```
 
 Not obeying the channel direction is detected at compile time.
+
+### Select
+
+A way to *multiplex* channels. A `select` waits until the communication for some `case` is ready to proceed, then executes its statements and moves on.
+
+```go
+select {
+case <- ch1:
+    // wait for ch1, discard value
+case x := <- ch2:
+    // wait for ch2, save value to x
+case ch3 <- y:
+    // send to ch3
+default:
+    // optional fallback
+}
+```
+
+An empty-bodied `select {}` waits forever.
+
+> **Note:** If multiple cases are ready at the same time, `select` picks one **randomly**.
