@@ -1,6 +1,6 @@
 # Modules
 
-### Package:
+### Package
 
 A single **folder**. Consists of *1-n* source files. They share package scope, meaning they can see each other's globals, even if they are *not exported* (are *lowercase*).
 
@@ -10,7 +10,7 @@ package main
 
 `main` is special - indicated entry point of a program. Package names are lowercase names of the modules to be imported.
 
-### Import:
+### Import
 
 **Simple import:**
 
@@ -53,7 +53,7 @@ import (
 )
 ```
 
-### Export:
+### Export
 
 Everything scoped globally starting with **uppercase** letter is exported. We access package exports like so:
 

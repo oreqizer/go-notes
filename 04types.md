@@ -1,5 +1,7 @@
 # Types
 
+Go has a _nominal_ type system. 
+
 ```go
 bool
 
