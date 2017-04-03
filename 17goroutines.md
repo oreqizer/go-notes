@@ -126,3 +126,75 @@ default:
 An empty-bodied `select {}` waits forever.
 
 > **Note:** If multiple cases are ready at the same time, `select` picks one **randomly**.
+
+## Patterns
+
+Useful patterns for handling various concurrency situations.
+
+#### Counting semaphore
+
+Used for limiting concurrency. Implemented using a *buffered channel*:
+
+```go
+// limit the number of crawlers to 20 at a time
+var tokens = make(chan struct{}, 20)
+
+func crawl(url string) []string {
+    tokens <- struct{}  // acquire a token
+    list, err := links.Extract(url)
+    <- tokens           // release a token
+
+    if err != nil {
+        log.Print(err)
+    }
+    return list
+}
+```
+
+#### Broadcasting cancellation
+
+We can set up a channel that signals cancellation by being *closed*. This abuses the fact that a closed channel responds immediately, producing zero value:
+
+```go
+var done = make(chan struct{})
+
+func cancelled() bool {
+    select {
+    case <-done:
+        return true
+    default:
+        return false
+    }
+}
+
+// Cancel on any stdin
+go func() {
+    os.Stdin.Read(make([]byte, 1))
+    close(done)
+}()
+
+for {
+    select {
+    case <-done:
+        for range fileSizes {
+            // Drain channel to allow existing goroutines to finish
+        }
+    case size, ok := <-fileSizes:
+        // do stuff
+    }
+}
+
+func walkDir(dir string, n *sync.WaitGroup, fileSizes chan<- int64) {
+    defer n.Done()
+    if cancelled() {  // Poll if cancelled
+        return
+    }
+    for _, entry := range dirents(dir) {
+        // do stuff
+    }
+}
+```
+
+#### Panic cleanup
+
+Calling a `panic` dumps the stack of *all* goroutines. Useful as a turbo cleanup during testing.
