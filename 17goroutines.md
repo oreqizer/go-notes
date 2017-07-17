@@ -173,17 +173,6 @@ go func() {
     close(done)
 }()
 
-for {
-    select {
-    case <-done:
-        for range fileSizes {
-            // Drain channel to allow existing goroutines to finish
-        }
-    case size, ok := <-fileSizes:
-        // do stuff
-    }
-}
-
 func walkDir(dir string, n *sync.WaitGroup, fileSizes chan<- int64) {
     defer n.Done()
     if cancelled() {  // Poll if cancelled
