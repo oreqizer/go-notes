@@ -140,9 +140,9 @@ Used for limiting concurrency. Implemented using a *buffered channel*:
 var tokens = make(chan struct{}, 20)
 
 func crawl(url string) []string {
-    tokens <- struct{}  // acquire a token
+    tokens <- struct{}{} // acquire a token
     list, err := links.Extract(url)
-    <- tokens           // release a token
+    <- tokens            // release a token
 
     if err != nil {
         log.Print(err)
