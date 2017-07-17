@@ -33,8 +33,8 @@ import "fmt"
 
 func main() {
 	sum := 1
-    // we could keep semicolons:
-    // for ; sum < 1000; {
+    	// we could keep semicolons:
+    	// for ; sum < 1000; {
 	for sum < 1000 {
 		sum += sum
 	}
@@ -53,7 +53,7 @@ import "fmt"
 
 func main() {
 	for {
-        fmt.Println("oreqizer is 1337")
+        	fmt.Println("oreqizer is 1337")
 	}
 }
 ```
